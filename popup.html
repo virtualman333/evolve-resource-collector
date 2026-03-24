@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>资源点击器</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      width: 280px;
+      padding: 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    
+    h3 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #ffffff;
+      font-size: 24px;
+      font-weight: 600;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    #resourceInfo {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+    }
+    
+    .resource-item {
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .resource-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .resource-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .resource-name {
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .resource-name::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    
+    .resource-item:nth-child(1) .resource-name::before {
+      background-color: #e74c3c;
+    }
+    
+    .resource-item:nth-child(2) .resource-name::before {
+      background-color: #f39c12;
+    }
+    
+    .resource-item:nth-child(3) .resource-name::before {
+      background-color: #95a5a6;
+    }
+    
+    #foodInfo, #lumberInfo, #stoneInfo {
+      font-weight: 500;
+      color: #34495e;
+      font-size: 13px;
+    }
+    
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+    
+    button:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+    }
+    
+    #progressContainer {
+      margin-top: 20px;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    #progressLabel {
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #ffffff;
+      font-weight: 500;
+      text-align: center;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
+    
+    #progressBar {
+      width: 100%;
+      height: 24px;
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    #progressFill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      border-radius: 12px;
+      transition: width 0.3s ease;
+      box-shadow: 0 2px 10px rgba(102, 126, 234, 0.5);
+      position: relative;
+    }
+    
+    #progressFill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% {
+        transform: translateX(-100%);
+      }
+      100% {
+        transform: translateX(100%);
+      }
+    }
+  </style>
+</head>
+<body>
+  <h3>资源点击器</h3>
+  <div id="resourceInfo">
+    <div class="resource-item">
+      <span class="resource-name">食物:</span>
+      <span id="foodInfo">加载中...</span>
+    </div>
+    <div class="resource-item">
+      <span class="resource-name">木材:</span>
+      <span id="lumberInfo">加载中...</span>
+    </div>
+    <div class="resource-item">
+      <span class="resource-name">石头:</span>
+      <span id="stoneInfo">加载中...</span>
+    </div>
+  </div>
+  <button id="clickButton">开始点击</button>
+  <div id="progressContainer">
+    <div id="progressLabel">进度: 0%</div>
+    <div id="progressBar">
+      <div id="progressFill"></div>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "资源点击器",
+  "version": "1.0",
+  "description": "自动点击城市资源",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ]
+}
