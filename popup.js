@@ -1,3 +1,19 @@
+// 格式化数字显示，自动转换为K/M单位
+function formatNumber(num) {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1) + 'M';
+  } else if (num >= 1000) {
+    return (num / 1000).toFixed(1) + 'K';
+  } else {
+    return Math.round(num).toString();
+  }
+}
+
+// 修复浮点数精度问题
+function fixPrecision(num) {
+  return Math.round(num * 1000) / 1000;
+}
+
 // 获取资源信息并更新UI
 async function updateResourceInfo() {
   try {
@@ -7,11 +23,13 @@ async function updateResourceInfo() {
       target: { tabId: tab.id },
       function: () => {
         function translateNumber(text) {
-          const match = text.match(/(\d+(?:\.\d+)?)\s*K?/);
+          const match = text.match(/(\d+(?:\.\d+)?)\s*[KM]?/);
           if (!match) return 0;
           let count = parseFloat(match[1]);
           if (text.includes('K')) {
             count *= 1000;
+          } else if (text.includes('M')) {
+            count *= 1000000;
           }
           return count;
         }
@@ -24,7 +42,7 @@ async function updateResourceInfo() {
           if (parts.length !== 2) return null;
           const hadNumber = translateNumber(parts[0]);
           const maxNumber = translateNumber(parts[1]);
-          const needNumber = maxNumber - hadNumber;
+          const needNumber = Math.max(0, maxNumber - hadNumber);
           return {
             had: hadNumber,
             max: maxNumber,
@@ -42,24 +60,33 @@ async function updateResourceInfo() {
     
     const resourceData = result[0].result;
     
-    // 更新UI显示
+    // 更新UI显示，使用格式化函数
     if (resourceData.food) {
+      const had = fixPrecision(resourceData.food.had);
+      const max = fixPrecision(resourceData.food.max);
+      const need = fixPrecision(resourceData.food.need);
       document.getElementById('foodInfo').textContent = 
-        `${resourceData.food.had}/${resourceData.food.max} (需:${resourceData.food.need})`;
+        `${formatNumber(had)}/${formatNumber(max)} (需:${formatNumber(need)})`;
     } else {
       document.getElementById('foodInfo').textContent = '未找到';
     }
     
     if (resourceData.lumber) {
+      const had = fixPrecision(resourceData.lumber.had);
+      const max = fixPrecision(resourceData.lumber.max);
+      const need = fixPrecision(resourceData.lumber.need);
       document.getElementById('lumberInfo').textContent = 
-        `${resourceData.lumber.had}/${resourceData.lumber.max} (需:${resourceData.lumber.need})`;
+        `${formatNumber(had)}/${formatNumber(max)} (需:${formatNumber(need)})`;
     } else {
       document.getElementById('lumberInfo').textContent = '未找到';
     }
     
     if (resourceData.stone) {
+      const had = fixPrecision(resourceData.stone.had);
+      const max = fixPrecision(resourceData.stone.max);
+      const need = fixPrecision(resourceData.stone.need);
       document.getElementById('stoneInfo').textContent = 
-        `${resourceData.stone.had}/${resourceData.stone.max} (需:${resourceData.stone.need})`;
+        `${formatNumber(had)}/${formatNumber(max)} (需:${formatNumber(need)})`;
     } else {
       document.getElementById('stoneInfo').textContent = '未找到';
     }

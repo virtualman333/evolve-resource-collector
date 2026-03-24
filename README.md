@@ -2,6 +2,7 @@
 
 一个为 [Evolve](https://pmotschmann.github.io/Evolve/) 游戏设计的浏览器扩展，帮助玩家快速收集食物、木材和石头资源。
 
+![alt text](images/image.png)
 ## 功能特性
 
 - 🎯 **智能资源收集**：自动识别并收集食物、木材、石头三种资源
